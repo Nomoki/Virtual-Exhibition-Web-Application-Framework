@@ -1,7 +1,7 @@
-import * as THREE from 'https://cdn.skypack.dev/three@0.131.3';
-import { OrbitControls } from 'https://cdn.skypack.dev/three@0.131.3/examples/jsm/controls/OrbitControls.js';
+import * as THREE from '/three.js-master/build/three.module.js';
+import { OrbitControls } from '/three.js-master/examples/jsm/controls/OrbitControls.js';
 
-      
+
 let camera, controls, scene, renderer;
 
 init();
@@ -11,6 +11,7 @@ const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( {color: 0xFF0000} );
 const cube = new THREE.Mesh( geometry, material );
 cube.position.y = 0.5;
+
 
 function init() {
 
