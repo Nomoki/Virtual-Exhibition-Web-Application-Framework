@@ -5,8 +5,12 @@ import { OrbitControls } from 'https://cdn.skypack.dev/three@0.131.3/examples/js
 let camera, controls, scene, renderer;
 
 init();
-//render(); // remove when using next line for animation loop (requestAnimationFrame)
 animate();
+
+const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const material = new THREE.MeshBasicMaterial( {color: 0xFF0000} );
+const cube = new THREE.Mesh( geometry, material );
+cube.position.y = 0.5;
 
 function init() {
 
@@ -58,11 +62,7 @@ function init() {
     scene.add( gridHelper );
 
     //add cube
-    const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    const material = new THREE.MeshBasicMaterial( {color: 0xFF0000} );
-    const cube = new THREE.Mesh( geometry, material );
-    cube.position.y = 0.5;
-    scene.add( cube );
+
 
     //add cone
     const geometry2 = new THREE.ConeGeometry( 2, 3, 4 );
@@ -79,6 +79,12 @@ function init() {
     window.addEventListener( 'resize', onWindowResize );
 
 }
+
+function box(){
+    scene.add( cube );
+    console.log("box1")
+}
+document.getElementById("btn1").addEventListener("click", box);
 
 function onWindowResize() {
 

@@ -1,3 +1,24 @@
 body{
     margin: 0px;
 }
+.menu{
+    width: 15%;
+    height: 100%;
+    position: absolute;
+    left: 85vw;
+    background-color: white;
+    
+}
+#btn1{
+    width: 50px;
+    height: 50px;
+    background-color: black;
+    margin-top: 10%;
+    margin-left: 10%;
+    transition: 0.5s;
+    border-radius: 10px;
+}
+#btn1:hover{
+    width: 60px;
+    height: 60px;
+}
