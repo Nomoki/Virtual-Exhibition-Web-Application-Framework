@@ -1,5 +1,7 @@
 import * as THREE from '/three.js-master/build/three.module.js';
 import { OrbitControls } from '/three.js-master/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from '/three.js-master/examples/jsm/loaders/GLTFLoader.js';
+// import { FBXLoader } from '/three.js-master/examples/jsm/loaders/FBXLoader';
 
 
 let camera, controls, scene, renderer;
@@ -11,6 +13,7 @@ const geometry = new THREE.BoxGeometry( 1, 1, 1 );
 const material = new THREE.MeshBasicMaterial( {color: 0xFF0000} );
 const cube = new THREE.Mesh( geometry, material );
 cube.position.y = 0.5;
+
 
 
 function init() {
@@ -45,7 +48,7 @@ function init() {
 
     // lights
 
-  /*   const dirLight1 = new THREE.DirectionalLight( 0xffffff );
+     const dirLight1 = new THREE.DirectionalLight( 0xffffff );
     dirLight1.position.set( 1, 1, 1 );
     scene.add( dirLight1 );
 
@@ -54,7 +57,7 @@ function init() {
     scene.add( dirLight2 );
 
     const ambientLight = new THREE.AmbientLight( 0x222222 );
-    scene.add( ambientLight ); */
+    scene.add( ambientLight ); 
 
     //grid
     const size = 10;
@@ -74,6 +77,8 @@ function init() {
     scene.add(cone);
 
 
+    // model
+   
 
 
     // auto resize update
@@ -81,7 +86,20 @@ function init() {
 
 }
 
+//click and add fox to the scene
 function box(){
+    const loader = new GLTFLoader();
+
+    loader.load( 'fox.gltf', function (gltf) {
+        gltf.scene.scale.set(0.05, 0.05, 0.05);
+        scene.add( gltf.scene );
+        
+    }, undefined, function ( error ) {
+    
+        console.error( error );
+    
+    } );
+
     scene.add( cube );
     console.log("box1")
 }
