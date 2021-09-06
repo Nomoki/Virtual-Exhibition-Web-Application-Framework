@@ -1,18 +1,16 @@
 import * as THREE from '/three.js-master/build/three.module.js';
 import { OrbitControls } from '/three.js-master/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from '/three.js-master/examples/jsm/loaders/GLTFLoader.js';
+import { TransformControls } from '/three.js-master/examples/jsm/controls/TransformControls.js';
 // import { FBXLoader } from '/three.js-master/examples/jsm/loaders/FBXLoader';
 
 
-let camera, controls, scene, renderer;
+
+let cameraPersp, cameraOrtho, currentCamera;
+let scene, renderer, control, orbit;
 
 init();
-animate();
-
-const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( {color: 0xFF0000} );
-const cube = new THREE.Mesh( geometry, material );
-cube.position.y = 0.5;
+render()
 
 
 
@@ -21,34 +19,26 @@ function init() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0xcccccc );
 
-    renderer = new THREE.WebGLRenderer( { antialias: true } );
+    //grid
+    scene.add( new THREE.GridHelper( 1000, 10, 0x888888, 0x444444 ) );
+
+    renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( window.innerWidth, window.innerHeight );
     document.body.appendChild( renderer.domElement );
 
-    camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
-    camera.position.set( 5, 10, 0 );
+    //camera
+    const aspect = window.innerWidth / window.innerHeight;
 
-    // controls
+    cameraPersp = new THREE.PerspectiveCamera( 50, aspect, 0.01, 30000 );
+    cameraOrtho = new THREE.OrthographicCamera( - 600 * aspect, 600 * aspect, 600, - 600, 0.01, 30000 );
+    currentCamera = cameraPersp;
 
-    controls = new OrbitControls( camera, renderer.domElement );
-    controls.listenToKeyEvents( window ); // optional
+    currentCamera.position.set( 1000, 500, 1000 );
+    currentCamera.lookAt( 0, 200, 0 );
 
-    //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
-
-    controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    controls.dampingFactor = 0.05;
-
-    controls.screenSpacePanning = false;
-
-    controls.minDistance = 5;
-    controls.maxDistance = 50;
-
-    controls.maxPolarAngle = Math.PI / 2;
-
-    // lights
-
-     const dirLight1 = new THREE.DirectionalLight( 0xffffff );
+    //light
+    const dirLight1 = new THREE.DirectionalLight( 0xffffff );
     dirLight1.position.set( 1, 1, 1 );
     scene.add( dirLight1 );
 
@@ -59,11 +49,90 @@ function init() {
     const ambientLight = new THREE.AmbientLight( 0x222222 );
     scene.add( ambientLight ); 
 
-    //grid
-    const size = 10;
-    const divisions = 10;
-    const gridHelper = new THREE.GridHelper( size, divisions );
-    scene.add( gridHelper );
+    //box
+    const geometry = new THREE.BoxGeometry( 200, 200, 200 );
+    const material = new THREE.MeshPhongMaterial({
+        color: 0xFF0000,
+        specular:0xff0000,
+        shininess:0.1
+    });
+
+    //cameracontrol
+    orbit = new OrbitControls( currentCamera, renderer.domElement );
+    orbit.update();
+    orbit.addEventListener( 'change', render );
+
+    control = new TransformControls( currentCamera, renderer.domElement );
+    control.addEventListener( 'change', render );
+
+    control.addEventListener( 'dragging-changed', function ( event ) {
+
+        orbit.enabled = ! event.value;
+
+    } );
+
+    const mesh = new THREE.Mesh( geometry,material);
+    scene.add( mesh );
+
+    control.attach( mesh );
+    scene.add( control );
+
+    window.addEventListener( 'resize', onWindowResize );
+
+    //keypress control obj
+    window.addEventListener( 'keydown', function ( event ) {
+
+        switch ( event.keyCode ) {
+
+            case 81: // Q
+                control.setSpace( control.space === 'local' ? 'world' : 'local' );
+                break;
+
+            case 16: // Shift
+                control.setTranslationSnap( 100 );
+                control.setRotationSnap( THREE.MathUtils.degToRad( 15 ) );
+                control.setScaleSnap( 0.25 );
+                break;
+
+            case 87: // W
+                control.setMode( 'translate' );
+                break;
+
+            case 69: // e
+                control.setMode( 'rotate' );
+                break;
+
+            case 82: // r
+                control.setMode( 'scale' );
+                break;
+
+            case 187:
+            case 107: // +, =, num+
+                control.setSize( control.size + 0.1 );
+                break;
+
+            case 189:
+            case 109: // -, _, num-
+                control.setSize( Math.max( control.size - 0.1, 0.1 ) );
+                break;
+
+        }
+
+    } );
+
+    window.addEventListener( 'keyup', function ( event ) {
+
+        switch ( event.keyCode ) {
+
+            case 16: // Shift
+                control.setTranslationSnap( null );
+                control.setRotationSnap( null );
+                control.setScaleSnap( null );
+                break;
+
+        }
+
+    } )
 
     //add cube
 
@@ -91,7 +160,7 @@ function box(){
     const loader = new GLTFLoader();
 
     loader.load( 'fox.gltf', function (gltf) {
-        gltf.scene.scale.set(0.05, 0.05, 0.05);
+        gltf.scene.scale.set(2, 2, 2);
         scene.add( gltf.scene );
         
     }, undefined, function ( error ) {
@@ -99,26 +168,22 @@ function box(){
         console.error( error );
     
     } );
-
-    scene.add( cube );
     console.log("box1")
 }
 document.getElementById("btn1").addEventListener("click", box);
 
 function onWindowResize() {
 
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
+    const aspect = window.innerWidth / window.innerHeight;
+
+    cameraPersp.aspect = aspect;
+    cameraPersp.updateProjectionMatrix();
+
+    cameraOrtho.left = cameraOrtho.bottom * aspect;
+    cameraOrtho.right = cameraOrtho.top * aspect;
+    cameraOrtho.updateProjectionMatrix();
 
     renderer.setSize( window.innerWidth, window.innerHeight );
-
-}
-
-function animate() {
-
-    requestAnimationFrame( animate );
-
-    controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
 
     render();
 
@@ -126,7 +191,7 @@ function animate() {
 
 function render() {
 
-    renderer.render( scene, camera );
+    renderer.render( scene, currentCamera );
 
 }
 
