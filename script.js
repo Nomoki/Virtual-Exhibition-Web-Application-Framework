@@ -2,7 +2,7 @@ import * as THREE from '/three.js-master/build/three.module.js';
 import { OrbitControls } from '/three.js-master/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from '/three.js-master/examples/jsm/loaders/GLTFLoader.js';
 import { TransformControls } from '/three.js-master/examples/jsm/controls/TransformControls.js';
-// import { FBXLoader } from '/three.js-master/examples/jsm/loaders/FBXLoader';
+import { FBXLoader } from '/three.js-master/examples/jsm/loaders/FBXLoader.js';
 
 
 
@@ -137,18 +137,14 @@ function init() {
     //add cube
 
 
-    //add cone
-    const geometry2 = new THREE.ConeGeometry( 2, 3, 4 );
-    const material2 = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-    const cone = new THREE.Mesh( geometry2, material2 );
-    cone.position.y = 1.5;
-    cone.position.x = 3;
-    scene.add(cone);
-
 
     // model
-   
-
+    const loader = new FBXLoader();
+    loader.load( 'character.fbx', function ( object ) {
+        object.position.set( 300, 10, 1 );
+        scene.add( object );
+    
+    } );
 
     // auto resize update
     window.addEventListener( 'resize', onWindowResize );
@@ -171,7 +167,7 @@ function box(){
     console.log("box1 Added")
 }
 function save(){
-    console.log("save!")
+
 }
 
 document.getElementById("btn1").addEventListener("click", box);
