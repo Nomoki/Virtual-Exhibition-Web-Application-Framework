@@ -168,9 +168,14 @@ function box(){
         console.error( error );
     
     } );
-    console.log("box1")
+    console.log("box1 Added")
 }
+function save(){
+    console.log("save!")
+}
+
 document.getElementById("btn1").addEventListener("click", box);
+document.getElementById("btn2").addEventListener("click", save);
 
 function onWindowResize() {
 
@@ -194,5 +199,3 @@ function render() {
     renderer.render( scene, currentCamera );
 
 }
-
-	
