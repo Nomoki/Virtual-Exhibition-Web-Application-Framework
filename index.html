@@ -10,8 +10,18 @@
     <div class="menu">
         <div id="btn1"></div>
         <div id= "btn2"></div>
+        <div id= "btn3"></div>
+
      
     </div>
+    <div class="info">
+        <label><input id="option_trs" name="trs" type="checkbox" checked="checked"/>TRS</label>
+		<label><input id="option_visible" name="visible" type="checkbox" checked="checked"/>Only Visible</label>
+		<label><input id="option_drawrange" name="visible" type="checkbox" checked="checked"/>Truncate drawRange</label><br/>
+		<label><input id="option_binary" name="visible" type="checkbox">Binary (<code>.glb</code>)</label>
+		<label><input id="option_maxsize" name="maxSize" type="number" value="4096" min="2" max="8192" step="1"> Max texture size</label>
+    </div>
+
     <script type="module" src="script.js"></script>
 </body>
 </html>

@@ -3,6 +3,7 @@ import { OrbitControls } from '/three.js-master/examples/jsm/controls/OrbitContr
 import { GLTFLoader } from '/three.js-master/examples/jsm/loaders/GLTFLoader.js';
 import { TransformControls } from '/three.js-master/examples/jsm/controls/TransformControls.js';
 import { FBXLoader } from '/three.js-master/examples/jsm/loaders/FBXLoader.js';
+import { GLTFExporter } from '/three.js-master/examples/jsm/exporters/GLTFExporter.js';
 
 
 
@@ -166,12 +167,82 @@ function box(){
     } );
     console.log("box1 Added")
 }
-function save(){
+
+function sc(){
+    const loader = new GLTFLoader();
+
+    loader.load( 'scene.gltf', function (gltf) {
+        gltf.scene.scale.set(1, 1, 1);
+        scene.add( gltf.scene );
+        
+    }, undefined, function ( error ) {
+    
+        console.error( error );
+    
+    } );
+    console.log("sc1 Added")
+}
+
+function exportGLTF( input ) {
+
+    const gltfExporter = new GLTFExporter();
+
+    const options = {
+        trs: document.getElementById( 'option_trs' ).checked,
+        onlyVisible: document.getElementById( 'option_visible' ).checked,
+        truncateDrawRange: document.getElementById( 'option_drawrange' ).checked,
+        binary: document.getElementById( 'option_binary' ).checked,
+        maxTextureSize: Number( document.getElementById( 'option_maxsize' ).value ) || Infinity // To prevent NaN value
+    };
+    gltfExporter.parse( input, function ( result ) {
+
+        if ( result instanceof ArrayBuffer ) {
+
+            saveArrayBuffer( result, 'scene.glb' );
+
+        } else {
+
+            const output = JSON.stringify( result, null, 2 );
+            console.log( output );
+            saveString( output, 'scene.gltf' );
+
+        }
+
+    }, options );
 
 }
 
 document.getElementById("btn1").addEventListener("click", box);
-document.getElementById("btn2").addEventListener("click", save);
+document.getElementById("btn2").addEventListener("click", () => {
+    exportGLTF(scene);
+});
+document.getElementById("btn3").addEventListener("click", sc);
+
+const link = document.createElement( 'a' );
+link.style.display = 'none';
+document.body.appendChild( link ); // Firefox workaround, see #6594
+
+function save( blob, filename ) {
+
+	link.href = URL.createObjectURL( blob );
+	link.download = filename;
+	link.click();
+
+	// URL.revokeObjectURL( url ); breaks Firefox...
+
+}
+
+function saveString( text, filename ) {
+
+	save( new Blob( [ text ], { type: 'text/plain' } ), filename );
+
+}
+
+function saveArrayBuffer( buffer, filename ) {
+
+	save( new Blob( [ buffer ], { type: 'application/octet-stream' } ), filename );
+
+}
 
 function onWindowResize() {
 
