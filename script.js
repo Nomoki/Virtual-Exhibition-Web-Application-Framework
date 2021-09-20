@@ -8,7 +8,7 @@ import { GLTFExporter } from '/three.js-master/examples/jsm/exporters/GLTFExport
 
 
 let cameraPersp, cameraOrtho, currentCamera;
-let scene, renderer, control, orbit;
+let scene, renderer, control, orbit, grid;
 
 init();
 render()
@@ -21,7 +21,9 @@ function init() {
     scene.background = new THREE.Color( 0xcccccc );
 
     //grid
-    scene.add( new THREE.GridHelper( 1000, 10, 0x888888, 0x444444 ) );
+    grid = new THREE.GridHelper( 1000, 10, 0x888888, 0x444444 );
+    grid.name = "GridHelper";
+    scene.add( grid );
 
     renderer = new THREE.WebGLRenderer();
     renderer.setPixelRatio( window.devicePixelRatio );
@@ -214,6 +216,7 @@ function exportGLTF( input ) {
 
 document.getElementById("btn1").addEventListener("click", box);
 document.getElementById("btn2").addEventListener("click", () => {
+    scene.remove(grid);
     exportGLTF(scene);
 });
 document.getElementById("btn3").addEventListener("click", sc);
