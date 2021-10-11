@@ -22,7 +22,9 @@ scene.background = new THREE.Color( 0xcccccc );
 //grid
 grid = new THREE.GridHelper( 1000, 10, 0x888888, 0x444444 );
 grid.name = "GridHelper";
-scene.add( grid );
+grid.userData.name = 'grid'
+scene.add( grid);
+
 
 //camera
 camera.position.set(0,400,800 )
@@ -40,7 +42,7 @@ scene.add(light);
 // floor.position.set(0,-1,0,0)
 // scene.add(floor);
 
-//trackball control
+//Orbit control
 controls = new OrbitControls(camera,renderer.domElement);
 controls.rotateSpeed = 0.20;
 controls.panSpeed = 0.20;
@@ -56,8 +58,11 @@ const matyellow = new THREE.MeshPhongMaterial({
     color:0xFFFF00
 })
 var boxs1 = new THREE.Mesh(geo,mat);
+boxs1.userData.name = 'boxs1'
 var boxs2 = new THREE.Mesh(geo,matgreen);
+boxs2.userData.name = 'boxs2'
 var boxs3 = new THREE.Mesh(geo,matyellow);
+boxs3.userData.name = 'boxs3'
 boxs1.position.set(100,50,100)
 boxs2.position.set(200,50,300)
 boxs3.position.set(-300,50,300)
@@ -74,7 +79,22 @@ function onMouseMove(event){
     mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 }
+
 function onMouseDown(event){
+    event.preventDefault();
+	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+	raycaster.setFromCamera(mouse, camera);
+
+	var intersects = raycaster.intersectObjects(scene.children);
+	if (intersects.length > 0) {
+        var SELECTED = intersects[ 0 ].object;
+        console.log("CLICK DONE",intersects[0].object)
+		ctrl1.attach(SELECTED);
+	}else{
+        // ctrl1.detach(SELECTED);
+    }
 
 }
 function onMouseUp(event){
@@ -89,15 +109,68 @@ ctrl1.addEventListener('mouseDown', function () {
 ctrl1.addEventListener('mouseUp', function () {
     controls.enabled = true;
 });
+window.addEventListener( 'keydown', function ( event ) {
+
+    switch ( event.keyCode ) {
+
+        case 81: // Q
+            ctrl1.setSpace( ctrl1.space === 'local' ? 'world' : 'local' );
+            break;
+
+        case 16: // Shift
+            ctrl1.setTranslationSnap(50);
+            ctrl1.setRotationSnap( THREE.MathUtils.degToRad( 15 ) );
+            ctrl1.setScaleSnap( 0.25 );
+            break;
+
+        case 87: // W
+            ctrl1.setMode( 'translate' );
+            break;
+
+        case 69: // e
+            ctrl1.setMode( 'rotate' );
+            break;
+
+        case 82: // r
+            ctrl1.setMode( 'scale' );
+            break;
+
+        case 107: // +, =, num+
+            ctrl1.setSize( ctrl1.size + 0.1 );
+            break;
+
+        case 109: // -, _, num-
+            ctrl1.setSize( Math.max( ctrl1.size - 0.1, 0.1 ) );
+            break;
+
+    }
+
+} );
+
+window.addEventListener( 'keyup', function ( event ) {
+
+    switch ( event.keyCode ) {
+
+        case 16: // Shift
+            ctrl1.setTranslationSnap( null );
+            ctrl1.setRotationSnap( null );
+            ctrl1.setScaleSnap( null );
+            break;
+
+    }
+
+} )
+
 scene.add(ctrl1)
 function box(){
     const loader = new GLTFLoader();
 
     loader.load( 'Table And Chairs2.gltf', function (gltf) {
         gltf.scene.scale.set(2, 2, 2);
-        scene.add( gltf.scene );
+        scene.add(gltf.scene);
         
     });
+    
     console.log("box1 Added")
 }
 
@@ -105,14 +178,9 @@ function sc(){
     const loader = new GLTFLoader();
 
     loader.load( 'scene.gltf', function (gltf) {
-        gltf.scene.scale.set(1, 1, 1);
-        scene.add( gltf.scene );
-        
-    }, undefined, function ( error ) {
-    
-        console.error( error );
-    
-    } );
+        const table = new THREE.Mesh()
+        scene.add(table);
+    });
     console.log("sc1 Added")
 }
 
@@ -194,7 +262,7 @@ const animate = function () {
     const intersects = raycaster.intersectObjects(scene.children);
     if(intersects.length > 0){
         console.log("Intersects")
-
+        console.log(intersects[0].object.userData.name)
 	}else{
         console.log("not")
     };
