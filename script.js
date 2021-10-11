@@ -7,166 +7,97 @@ import { GLTFExporter } from '/three.js-master/examples/jsm/exporters/GLTFExport
 
 
 
-let cameraPersp, cameraOrtho, currentCamera;
-let scene, renderer, control, orbit, grid;
-
-init();
-render()
+let scene, renderer, controls, grid,camera,light,geo,mat;
+let mouse = new THREE.Vector2();
 
 
+scene = new THREE.Scene();
+camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 5000 );
 
-function init() {
+renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+scene.background = new THREE.Color( 0xcccccc );
 
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color( 0xcccccc );
+//grid
+grid = new THREE.GridHelper( 1000, 10, 0x888888, 0x444444 );
+grid.name = "GridHelper";
+scene.add( grid );
 
-    //grid
-    grid = new THREE.GridHelper( 1000, 10, 0x888888, 0x444444 );
-    grid.name = "GridHelper";
-    scene.add( grid );
-
-    renderer = new THREE.WebGLRenderer();
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    document.body.appendChild( renderer.domElement );
-
-    //camera
-    const aspect = window.innerWidth / window.innerHeight;
-
-    cameraPersp = new THREE.PerspectiveCamera( 50, aspect, 0.01, 30000 );
-    cameraOrtho = new THREE.OrthographicCamera( - 600 * aspect, 600 * aspect, 600, - 600, 0.01, 30000 );
-    currentCamera = cameraPersp;
-
-    currentCamera.position.set( 1000, 500, 1000 );
-    currentCamera.lookAt( 0, 200, 0 );
-
-    //light
-    const dirLight1 = new THREE.DirectionalLight( 0xffffff );
-    dirLight1.position.set( 1, 1, 1 );
-    scene.add( dirLight1 );
-
-    const dirLight2 = new THREE.DirectionalLight( 0x002288 );
-    dirLight2.position.set( - 1, - 1, - 1 );
-    scene.add( dirLight2 );
-
-    const ambientLight = new THREE.AmbientLight( 0x222222 );
-    scene.add( ambientLight ); 
-
-    //box
-    const geometry = new THREE.BoxGeometry( 200, 200, 200 );
-    const material = new THREE.MeshPhongMaterial({
-        color: 0xFF0000,
-        specular:0xff0000,
-        shininess:0.1
-    });
-
-    //cameracontrol
-    orbit = new OrbitControls( currentCamera, renderer.domElement );
-    orbit.update();
-    orbit.addEventListener( 'change', render );
-
-    control = new TransformControls( currentCamera, renderer.domElement );
-    control.addEventListener( 'change', render );
-
-    control.addEventListener( 'dragging-changed', function ( event ) {
-
-        orbit.enabled = ! event.value;
-
-    } );
-
-    const mesh = new THREE.Mesh( geometry,material);
-    scene.add( mesh );
-
-    control.attach( mesh );
-    scene.add( control );
-
-    window.addEventListener( 'resize', onWindowResize );
-
-    //keypress control obj
-    window.addEventListener( 'keydown', function ( event ) {
-
-        switch ( event.keyCode ) {
-
-            case 81: // Q
-                control.setSpace( control.space === 'local' ? 'world' : 'local' );
-                break;
-
-            case 16: // Shift
-                control.setTranslationSnap( 100 );
-                control.setRotationSnap( THREE.MathUtils.degToRad( 15 ) );
-                control.setScaleSnap( 0.25 );
-                break;
-
-            case 87: // W
-                control.setMode( 'translate' );
-                break;
-
-            case 69: // e
-                control.setMode( 'rotate' );
-                break;
-
-            case 82: // r
-                control.setMode( 'scale' );
-                break;
-
-            case 187:
-            case 107: // +, =, num+
-                control.setSize( control.size + 0.1 );
-                break;
-
-            case 189:
-            case 109: // -, _, num-
-                control.setSize( Math.max( control.size - 0.1, 0.1 ) );
-                break;
-
-        }
-
-    } );
-
-    window.addEventListener( 'keyup', function ( event ) {
-
-        switch ( event.keyCode ) {
-
-            case 16: // Shift
-                control.setTranslationSnap( null );
-                control.setRotationSnap( null );
-                control.setScaleSnap( null );
-                break;
-
-        }
-
-    } )
-
-    //add cube
+//camera
+camera.position.set(0,400,800 )
 
 
+//light
+light = new THREE.PointLight(0xffffff,1,3000);
+light.position.set(0,300,0);
+scene.add(light);
 
-    // model
-    const loader = new FBXLoader();
-    loader.load( 'character.fbx', function ( object ) {
-        object.position.set( 300, 10, 1 );
-        scene.add( object );
-    
-    } );
+// const geofloor = new THREE.PlaneGeometry(1000,1000,50,50)
+// const matfloor = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+// const floor = new THREE.Mesh(geofloor,matfloor)
+// floor.rotation.x = Math.PI/2
+// floor.position.set(0,-1,0,0)
+// scene.add(floor);
 
-    // auto resize update
-    window.addEventListener( 'resize', onWindowResize );
+//trackball control
+controls = new OrbitControls(camera,renderer.domElement);
+controls.rotateSpeed = 0.20;
+controls.panSpeed = 0.20;
+
+geo = new THREE.BoxGeometry(100,100,100);
+mat = new THREE.MeshPhongMaterial({
+    color:0xFF0000
+})
+const matgreen = new THREE.MeshPhongMaterial({
+    color:0x00FF00
+})
+const matyellow = new THREE.MeshPhongMaterial({
+    color:0xFFFF00
+})
+var boxs1 = new THREE.Mesh(geo,mat);
+var boxs2 = new THREE.Mesh(geo,matgreen);
+var boxs3 = new THREE.Mesh(geo,matyellow);
+boxs1.position.set(100,50,100)
+boxs2.position.set(200,50,300)
+boxs3.position.set(-300,50,300)
+scene.add(boxs1)
+scene.add(boxs2)
+scene.add(boxs3)
+
+var raycaster = new THREE.Raycaster();
+document.addEventListener('mousemove',onMouseMove);
+document.addEventListener('mousedown',onMouseDown);
+document.addEventListener('mouseup',onMouseUp);
+
+function onMouseMove(event){
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+function onMouseDown(event){
 
 }
-
-//click and add fox to the scene
+function onMouseUp(event){
+    
+}
+///Tranform controls
+const ctrl1 = new TransformControls(camera, renderer.domElement)
+ctrl1.attach(boxs2)
+ctrl1.addEventListener('mouseDown', function () {
+    controls.enabled = false;
+});
+ctrl1.addEventListener('mouseUp', function () {
+    controls.enabled = true;
+});
+scene.add(ctrl1)
 function box(){
     const loader = new GLTFLoader();
 
-    loader.load( 'fox.gltf', function (gltf) {
+    loader.load( 'Table And Chairs2.gltf', function (gltf) {
         gltf.scene.scale.set(2, 2, 2);
         scene.add( gltf.scene );
         
-    }, undefined, function ( error ) {
-    
-        console.error( error );
-    
-    } );
+    });
     console.log("box1 Added")
 }
 
@@ -213,7 +144,7 @@ function exportGLTF( input ) {
     }, options );
 
 }
-
+///BTN function
 document.getElementById("btn1").addEventListener("click", box);
 document.getElementById("btn2").addEventListener("click", () => {
     scene.remove(grid);
@@ -246,26 +177,26 @@ function saveArrayBuffer( buffer, filename ) {
 	save( new Blob( [ buffer ], { type: 'application/octet-stream' } ), filename );
 
 }
+window.addEventListener( 'resize', onWindowResize, false );
 
-function onWindowResize() {
-
-    const aspect = window.innerWidth / window.innerHeight;
-
-    cameraPersp.aspect = aspect;
-    cameraPersp.updateProjectionMatrix();
-
-    cameraOrtho.left = cameraOrtho.bottom * aspect;
-    cameraOrtho.right = cameraOrtho.top * aspect;
-    cameraOrtho.updateProjectionMatrix();
-
+///Auto resize window
+function onWindowResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
     renderer.setSize( window.innerWidth, window.innerHeight );
-
-    render();
-
 }
 
-function render() {
+const animate = function () {
+	requestAnimationFrame( animate );
+	renderer.render( scene, camera );
+    controls.update();
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(scene.children);
+    if(intersects.length > 0){
+        console.log("Intersects")
 
-    renderer.render( scene, currentCamera );
-
+	}else{
+        console.log("not")
+    };
 }
+animate();
