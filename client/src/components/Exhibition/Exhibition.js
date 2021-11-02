@@ -243,7 +243,7 @@ const Exhibition = () => {
       <Box position={[3, 0.5, 1]} />
       {target && <TransformControls object={target} mode={mode} />}
       <OrbitControls makeDefault />
-      <gridHelper args={[10, 10]} />
+      <gridHelper args={[10, 10]} position={[0, 0, 0]}/>
     </Canvas>
   )
 }
