@@ -1,11 +1,10 @@
-import React, { useState, Suspense, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { Canvas, useFrame, useLoader } from '@react-three/fiber'
 import "./style.css"
 import { OrbitControls, TransformControls, useCursor, useGLTF, useAnimations } from '@react-three/drei'
 import { useControls } from 'leva'
 import create from 'zustand'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import Fox from './Fox'
 
 const useStore = create((set) => ({ target: null, setTarget: (target) => set({ target }) }))
 
@@ -22,9 +21,12 @@ function Box(props) {
 }
 function Model({ ...props }) {
     const group = useRef()
-    const { nodes, materials } = useGLTF('/table.gltf')
+    const { nodes, materials } = useGLTF('/table.gltf');
+    const setTarget = useStore((state) => state.setTarget)
+    const [hovered, setHovered] = useState(false)
+    useCursor(hovered)
     return (
-      <group ref={group} {...props} dispose={null}>
+      <group ref={group} {...props} dispose={null} onClick={(e) => setTarget(e.object)} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}>
         <mesh
           geometry={nodes.Provisione_table_058.geometry}
           material={nodes.Provisione_table_058.material}
@@ -216,7 +218,7 @@ const Exhibition = () => {
                 {target && <TransformControls object={target} mode={mode} />}
                 <OrbitControls makeDefault />
                 <gridHelper args={[10, 10]} />
-            
+                <Model />
         </Canvas>
     )
 }
