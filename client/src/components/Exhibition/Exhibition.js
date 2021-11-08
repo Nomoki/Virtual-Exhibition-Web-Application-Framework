@@ -6,6 +6,10 @@ import { useControls } from 'leva'
 import create from 'zustand'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
+import { Avatar, Button, Paper, Grid, Typography, Container,ListItemButton } from '@material-ui/core';
+
+
+
 
 const useStore = create((set) => ({ target: null, setTarget: (target) => set({ target }) }))
 
@@ -230,11 +234,23 @@ function Model({ url }, props) {
   useCursor(hovered)
   return <primitive object={scene} dispose={null}  scale={0.7} position={[-1.35, 0.1, 0]} {...props} onClick={(e) => setTarget(e.object)} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}/>
 }
+function Tool() {
+  
+  return(
+  <div className = 'space'>
+      <Button color='secondary' variant='contained' onClick={Box()}>Model</Button>
+      <Button color='secondary' variant='contained' onClick={Box()}>Save</Button>
+      <Button color='secondary' variant='contained' onClick={Box()}>load</Button>
+  </div>
+  )
+}
 
 const Exhibition = () => {
   const { target, setTarget } = useStore()
   const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
   return (
+    <Fragment>
+    <Tool/>
     <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)} camera={{ position: [3, 8, 0] }} frameloop="demand">
       <directionalLight position={[10, 10, 5]} intensity={2} />
       <directionalLight position={[-10, -10, -5]} intensity={1} />
@@ -245,6 +261,8 @@ const Exhibition = () => {
       <OrbitControls makeDefault />
       <gridHelper args={[10, 10]} />
     </Canvas>
+    {/* <tool/> */}
+    </Fragment>
   )
 }
 
