@@ -23,7 +23,7 @@ const Home = () => {
             <div className='btnset' style={{ display: 'Flex', flexDirection: 'column' }}>
                 <Button size="Large" variant="contained" style={{ backgroundColor: '#BCBCBC', color: 'white' }}
                     onClick={() => {
-                        history.push('/createworkspace')
+                        history.push('/explore')
                     }}>EXPLORE</Button><br />
                 <Button size="Large" variant="contained" style={{ backgroundColor: '#F9A434', color: 'white' }}
                     onClick={() => {

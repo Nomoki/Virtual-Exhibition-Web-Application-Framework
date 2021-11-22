@@ -6,7 +6,7 @@ import { getPosts } from '../../actions/posts';
 import Posts from '../Posts/Posts';
 import Form from '../Form/Form';
 
-const CreateWorkspace = () => {
+const Explore = () => {
     const [currentId, setCurrentId] = useState(0);
     const dispatch = useDispatch();
   
@@ -32,4 +32,4 @@ const CreateWorkspace = () => {
     )
 }
 
-export default CreateWorkspace
+export default Explore
