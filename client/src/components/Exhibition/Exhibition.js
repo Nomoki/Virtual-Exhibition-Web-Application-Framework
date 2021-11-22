@@ -56,7 +56,7 @@ const Exhibition = () => {
     <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)} camera={{ position: [3, 8, 0] }}>
       <directionalLight position={[10, 10, 5]} intensity={2} />
       <directionalLight position={[-10, -10, -5]} intensity={1} />
-      <Model url="/rimwater.gltf"/>
+      <Model url="/kajardsarn.gltf"/>
       {/* <Box position={[1, 0.5, 0]} />
       <Box position={[3, 0.5, 1]} /> */}
       {target && <TransformControls object={target} mode={mode} />}

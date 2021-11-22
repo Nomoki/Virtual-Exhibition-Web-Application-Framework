@@ -27,12 +27,9 @@ const Home = () => {
                     }}>EXPLORE</Button><br />
                 <Button size="Large" variant="contained" style={{ backgroundColor: '#F9A434', color: 'white' }}
                     onClick={() => {
-                        alert('create');
+                        history.push('/create')
                     }}>CREATE</Button>
             </div>
-
-
-
         </Fragment>
     )
 }

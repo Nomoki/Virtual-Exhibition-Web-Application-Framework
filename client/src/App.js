@@ -6,8 +6,9 @@ const Home = lazy(() => import('./components/Home/Home'));
 const Navbar = lazy(() => import('./components/Navbar/Navbar'));
 const Auth = lazy(() => import('./components/Auth/Auth'));
 const Exhibition = lazy(() => import('./components/Exhibition/Exhibition'));
-const Explore = lazy(() => import('./components/CreateWorkspace/Explore'));
+const Explore = lazy(() => import('./components/Explore/Explore'));
 const Profile = lazy(() => import('./components/Profile/Profile'));
+const Create = lazy(() => import('./components/Create/Create'));
 
 const App = () => (
   <BrowserRouter>
@@ -20,6 +21,7 @@ const App = () => (
         <Route path="/exhibition" exact render={props => <Exhibition {...props} />} />
         <Route path="/explore" exact render={props => <Explore {...props} />} />
         <Route path="/profile" exact render={props => <Profile {...props} />} />
+        <Route path="/create" exact render={props => <Create {...props} />} />
       </Switch>
     </Container>
     </Suspense>

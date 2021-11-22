@@ -38,7 +38,7 @@ const Navbar = () => {
 
     return (
         <Fragment>
-            <AppBar className={classes.appBar} position="static" color="inherit">
+            <AppBar className={classes.appBar} color="inherit" position='static'>
                 <div className={classes.brandContainer}>
                     <Typography component={Link} to="/" className={classes.heading} variant="h2" align="center">VE</Typography>
                 </div>
