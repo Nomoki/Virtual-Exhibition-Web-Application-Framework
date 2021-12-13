@@ -21,11 +21,11 @@ const Home = () => {
             <img src={hompic} style={{ width: '30%', height: '30%' }} />
 
             <div className='btnset' style={{ display: 'Flex', flexDirection: 'column' }}>
-                <Button size="Large" variant="contained" style={{ backgroundColor: '#BCBCBC', color: 'white' }}
+                <Button size="large" variant="contained" style={{ backgroundColor: '#BCBCBC', color: 'white' }}
                     onClick={() => {
                         history.push('/explore')
                     }}>EXPLORE</Button><br />
-                <Button size="Large" variant="contained" style={{ backgroundColor: '#F9A434', color: 'white' }}
+                <Button size="large" variant="contained" style={{ backgroundColor: '#F9A434', color: 'white' }}
                     onClick={() => {
                         history.push('/create')
                     }}>CREATE</Button>

@@ -6,7 +6,8 @@ import { useControls } from 'leva'
 import create from 'zustand'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
-import { Avatar, Button, Paper, Grid, Typography, Container,ListItemButton } from '@material-ui/core';
+import { Avatar, Button, Paper, Grid, Typography, Container,ListItemButton } from '@material-ui/core'
+import { useSelector } from 'react-redux'
 
 
 
@@ -40,25 +41,27 @@ function Tool() {
   
   return(
   <div className = 'space'>
-      <Button color='secondary' variant='contained' onClick={Box()}>Model</Button>
-      <Button color='secondary' variant='contained' onClick={Box()}>Save</Button>
-      <Button color='secondary' variant='contained' onClick={Box()}>load</Button>
+      <Button color='secondary' variant='contained' onClick={Model}>Model</Button>
+      <Button color='secondary' variant='contained' onClick={Model}>Save</Button>
+      <Button color='secondary' variant='contained' onClick={Model}>load</Button>
   </div>
   )
 }
 
-const Exhibition = () => {
+const Exhibition = ({ setCurrentId }) => {
   const { target, setTarget } = useStore()
   const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
+  const transforms = useSelector((state) => state.transforms);
   return (
     <Fragment>
     <Tool/>
     <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)} camera={{ position: [3, 8, 0] }}>
       <directionalLight position={[10, 10, 5]} intensity={2} />
       <directionalLight position={[-10, -10, -5]} intensity={1} />
-      <Model url="/kajardsarn.gltf"/>
-      {/* <Box position={[1, 0.5, 0]} />
-      <Box position={[3, 0.5, 1]} /> */}
+      {/* <Model url="/kajardsarn.gltf"/> */}
+      {transforms.map((trans) => (
+        <Box position={[trans.transX, trans.transY, trans.transZ]} setCurrentId={setCurrentId} />
+      ))}
       {target && <TransformControls object={target} mode={mode} />}
       <OrbitControls makeDefault />
       <gridHelper args={[10, 10]} />

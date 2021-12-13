@@ -5,6 +5,7 @@ import cors from 'cors';
 import compression from 'compression';
 import postRoutes from './routes/posts.js';
 import userRouter from './routes/users.js';
+import posRoutes from './routes/transformModel.js';
 
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(cors());
 
 app.use('/posts', postRoutes);
 app.use("/user", userRouter);
+app.use("/pos", posRoutes);
 
 const CONNECTION_URL = 'mongodb+srv://Oaky:12af7ooM@vewafdb.s4toy.mongodb.net/vewafdb';
 const PORT = process.env.PORT|| 5000;
