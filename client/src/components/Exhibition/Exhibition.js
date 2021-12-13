@@ -1,4 +1,4 @@
-import React, { useState, useRef, Fragment } from 'react'
+import React, { useState, useRef, Fragment, useEffect } from 'react'
 import { Canvas, useFrame, useLoader } from '@react-three/fiber'
 import "./style.css"
 import { OrbitControls, TransformControls, useCursor, useGLTF, useAnimations, Stats } from '@react-three/drei'
@@ -52,6 +52,27 @@ const Exhibition = ({ setCurrentId }) => {
   const { target, setTarget } = useStore()
   const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
   const transforms = useSelector((state) => state.transforms);
+  const [ trans, setTrans ] = useState([]);
+  const [ hasError, setError ] = useState(false);
+
+  
+
+  useEffect(() => {
+
+    const getdataFromApi = async () => {
+      const res = await fetch('http://localhost:5000/pos');
+      res.json()
+        .then((res) => {
+          setTrans(res)
+          console.log(res)
+        })
+        .catch((err) => setError(err))
+  }
+
+  getdataFromApi();  
+
+  }, []);
+
   return (
     <Fragment>
     <Tool/>
@@ -59,9 +80,16 @@ const Exhibition = ({ setCurrentId }) => {
       <directionalLight position={[10, 10, 5]} intensity={2} />
       <directionalLight position={[-10, -10, -5]} intensity={1} />
       {/* <Model url="/kajardsarn.gltf"/> */}
-      {transforms.map((trans) => (
+      {/* {transforms.map((trans) => (
         <Box position={[trans.transX, trans.transY, trans.transZ]} setCurrentId={setCurrentId} />
+      ))} */}
+
+      {trans.map((transi, index) => (
+          <Box position={[transi.TransX, transi.TransY, transi.TransZ]} key={index} />
       ))}
+
+      <Box position={[0, 1, 0]} />
+    
       {target && <TransformControls object={target} mode={mode} />}
       <OrbitControls makeDefault />
       <gridHelper args={[10, 10]} />
