@@ -1,9 +1,9 @@
 import mongoose from "mongoose"
 
 const transformSchema = mongoose.Schema({
-    transX: String,
-    transY: String,
-    transZ: String,
+    transX: Number,
+    transY: Number,
+    transZ: Number,
 });
 
 var TransformPosition = mongoose.model("position", transformSchema);
