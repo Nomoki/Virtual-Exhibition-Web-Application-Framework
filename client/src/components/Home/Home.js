@@ -18,7 +18,7 @@ const Home = () => {
             <Typography variant="h1" component="div" gutterBottom className='head'>
                 EXHIBITION
             </Typography>
-            <img src={hompic} style={{ width: '30%', height: '30%' }} />
+            <img src={hompic} style={{ width: '47%', height: '47%' }} />
 
             <div className='btnset' style={{ display: 'Flex', flexDirection: 'column' }}>
                 <Button size="large" variant="contained" style={{ backgroundColor: '#BCBCBC', color: 'white' }}
