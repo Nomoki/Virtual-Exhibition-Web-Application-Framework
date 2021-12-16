@@ -13,7 +13,7 @@ const Home = () => {
     return (
         <Fragment>
             <Typography variant="h2" component="div" gutterBottom className='headtop'>
-                VISUAL
+                VIRTUAL
             </Typography>
             <Typography variant="h1" component="div" gutterBottom className='head'>
                 EXHIBITION
