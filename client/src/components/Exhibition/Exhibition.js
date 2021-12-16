@@ -19,7 +19,7 @@ function Box(props) {
   const [hovered, setHovered] = useState(false)
   useCursor(hovered)
   return (
-    <mesh {...props} onClick={(e) => setTarget(e.object)} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}>
+    <mesh {...props} onClick={(e) => {e.stopPropagation(); setTarget(e.object);}} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}>
       <boxGeometry />
       <meshNormalMaterial />
     </mesh>
@@ -36,7 +36,7 @@ function Model({ url, scale }, props) {
   const setTarget = useStore((state) => state.setTarget)
   const [hovered, setHovered] = useState(false)
   useCursor(hovered)
-  return <primitive object={scene} dispose={null} scale={scale} position={[0, 0, 0]} {...props} onClick={(e) => setTarget(e.object)} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}/>
+  return <primitive object={scene} dispose={null} scale={scale} position={[0, 0, 0]} {...props} onClick={(e) => {e.stopPropagation(); setTarget(e.object);}} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}/>
 }
 function Tool() {
   
