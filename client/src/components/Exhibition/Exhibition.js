@@ -26,7 +26,7 @@ function Box(props) {
   )
 }
 
-function Model({ url, scale }, props) {
+function Model({ url, sx, sy, sz, px, py, pz, rx, ry, rz }, props) {
   const { scene } = useLoader(GLTFLoader, url, loader => {
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderConfig({ type: 'js' });
@@ -36,8 +36,9 @@ function Model({ url, scale }, props) {
   const setTarget = useStore((state) => state.setTarget)
   const [hovered, setHovered] = useState(false)
   useCursor(hovered)
-  return <primitive object={scene} dispose={null} scale={scale} position={[0, 0, 0]} {...props} onClick={(e) => {e.stopPropagation(); setTarget(e.object);}} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}/>
+  return <primitive object={scene} dispose={null} scale={[sx, sy, sz]} position={[px, py, pz]} rotation={[rx, ry, rz]} {...props} onClick={(e) => {e.stopPropagation(); setTarget(e.object);}} onPointerOver={() => setHovered(true)} onPointerOut={() => setHovered(false)}/>
 }
+
 function Tool() {
   
   return(
@@ -80,17 +81,16 @@ const Exhibition = ({ setCurrentId }) => {
     <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)} camera={{ position: [3, 8, 0] }}>
       <directionalLight position={[10, 10, 5]} intensity={2} />
       <directionalLight position={[-10, -10, -5]} intensity={1} />
-      <Model url="/kajardsarn.glb" scale={0.5} />
-      <Model url="/chair.glb" scale={0.01} />
+      {/* <Model url="/kajardsarn.glb" scale={0.5} /> */}
       {/* {transforms.map((trans) => (
         <Box position={[trans.transX, trans.transY, trans.transZ]} setCurrentId={setCurrentId} />
       ))} */}
 
-      {/* {trans.map((transi, index) => (
-          <Box position={[transi.TransX, transi.TransY, transi.TransZ]} key={index} />
+      {trans.map((transi, index) => (
+          <Model url="/chair.glb" sx={transi.ScaleX} sy={transi.ScaleY} sz={transi.ScaleZ}  px={transi.TransX} py={transi.TransY} pz={transi.TransZ} rx={transi.RotateX} ry={transi.RotateY} rz={transi.RotateZ} key={index}/>
       ))}
 
-      <Box position={[0, 1, 0]} /> */}
+      {/* <Box position={[0, 1, 0]} /> */}
     
       {target && <TransformControls object={target} mode={mode} />}
       <OrbitControls makeDefault />
