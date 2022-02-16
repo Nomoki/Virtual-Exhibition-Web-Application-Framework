@@ -74,7 +74,7 @@ const Exhibition = () => {
 
   useEffect(() => {
     dispatch(getTransforms());
-  }, [dispatch])
+  }, [])
 
   return (
     <Fragment>
