@@ -1,10 +1,10 @@
 import { TRANS } from '../constants/actionTypes';
 
-export default (tranforms = [], action) => {
+export default (transforms = [], action) => {
   switch (action.type) {
     case TRANS:
       return action.payload;
     default:
-      return tranforms;
+      return transforms;
   }
 };

@@ -7,7 +7,8 @@ import create from 'zustand'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { Avatar, Button, Paper, Grid, Typography, Container,ListItemButton } from '@material-ui/core'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { getTransforms } from '../../actions/transforms'
 
 
 
@@ -27,12 +28,7 @@ function Box(props) {
 }
 
 function Model({ url, sx, sy, sz, px, py, pz, rx, ry, rz }, props) {
-  const { scene } = useLoader(GLTFLoader, url, loader => {
-    const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderConfig({ type: 'js' });
-    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.4.1/');
-    loader.setDRACOLoader(dracoLoader);
-  });
+  const { scene } = useLoader(GLTFLoader, url)
   const setTarget = useStore((state) => state.setTarget)
   const [hovered, setHovered] = useState(false)
   useCursor(hovered)
@@ -50,30 +46,35 @@ function Tool() {
   )
 }
 
-const Exhibition = ({ setCurrentId }) => {
+const Exhibition = () => {
   const { target, setTarget } = useStore()
   const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
   const transforms = useSelector((state) => state.transforms);
+  const dispatch = useDispatch();
   const [ trans, setTrans ] = useState([]);
   const [ hasError, setError ] = useState(false);
 
-  
+  console.log(transforms);
+
+  // useEffect(() => {
+
+  //   const getdataFromApi = async () => {
+  //     const res = await fetch('http://localhost:5000/pos');
+  //     res.json()
+  //       .then((res) => {
+  //         setTrans(res)
+  //         console.log(res)
+  //       })
+  //       .catch((err) => setError(err))
+  // }
+
+  // getdataFromApi();  
+
+  // }, []);
 
   useEffect(() => {
-
-    const getdataFromApi = async () => {
-      const res = await fetch('http://localhost:5000/pos');
-      res.json()
-        .then((res) => {
-          setTrans(res)
-          console.log(res)
-        })
-        .catch((err) => setError(err))
-  }
-
-  getdataFromApi();  
-
-  }, []);
+    dispatch(getTransforms());
+  }, [dispatch])
 
   return (
     <Fragment>
@@ -82,13 +83,16 @@ const Exhibition = ({ setCurrentId }) => {
       <directionalLight position={[10, 10, 5]} intensity={2} />
       <directionalLight position={[-10, -10, -5]} intensity={1} />
       {/* <Model url="/kajardsarn.glb" scale={0.5} /> */}
-      {/* {transforms.map((trans) => (
-        <Box position={[trans.transX, trans.transY, trans.transZ]} setCurrentId={setCurrentId} />
+      {transforms.map((trans) => (
+        <Model url="/kajardsarn.glb" sx={trans.ScaleX} sy={trans.ScaleY} sz={trans.ScaleZ}  px={trans.TransX} py={trans.TransY} pz={trans.TransZ} rx={trans.RotateX} ry={trans.RotateY} rz={trans.RotateZ} key={trans._id} />
+      ))}
+
+      {/* {trans.map((transi, index) => (
+          <Model url="/chair.glb" sx={transi.ScaleX} sy={transi.ScaleY} sz={transi.ScaleZ}  px={transi.TransX} py={transi.TransY} pz={transi.TransZ} rx={transi.RotateX} ry={transi.RotateY} rz={transi.RotateZ} key={index}/>
       ))} */}
 
-      {trans.map((transi, index) => (
-          <Model url="/chair.glb" sx={transi.ScaleX} sy={transi.ScaleY} sz={transi.ScaleZ}  px={transi.TransX} py={transi.TransY} pz={transi.TransZ} rx={transi.RotateX} ry={transi.RotateY} rz={transi.RotateZ} key={index}/>
-      ))}
+      {/* <Model url="/morn.glb" sx={1} sy={1} sz={1}  px={0} py={0} pz={0} rx={0} ry={0} rz={0} /> */}
+      
 
       {/* <Box position={[0, 1, 0]} /> */}
     
