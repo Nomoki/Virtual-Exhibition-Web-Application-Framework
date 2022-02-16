@@ -28,7 +28,11 @@ function Box(props) {
 }
 
 function Model({ url, sx, sy, sz, px, py, pz, rx, ry, rz }, props) {
-  const { scene } = useLoader(GLTFLoader, url)
+  const { scene } = useLoader(GLTFLoader, url, loader => {
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('/draco/gltf/');
+    loader.setDRACOLoader(dracoLoader);
+  })
   const setTarget = useStore((state) => state.setTarget)
   const [hovered, setHovered] = useState(false)
   useCursor(hovered)
@@ -51,10 +55,6 @@ const Exhibition = () => {
   const { mode } = useControls({ mode: { value: 'translate', options: ['translate', 'rotate', 'scale'] } })
   const transforms = useSelector((state) => state.transforms);
   const dispatch = useDispatch();
-  const [ trans, setTrans ] = useState([]);
-  const [ hasError, setError ] = useState(false);
-
-  console.log(transforms);
 
   // useEffect(() => {
 
