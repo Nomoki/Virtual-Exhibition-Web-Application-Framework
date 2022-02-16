@@ -9,6 +9,7 @@ const Exhibition = lazy(() => import('./components/Exhibition/Exhibition'));
 const Explore = lazy(() => import('./components/Explore/Explore'));
 const Profile = lazy(() => import('./components/Profile/Profile'));
 const Create = lazy(() => import('./components/Create/Create'));
+const Viewer = lazy(() => import('./components/Viewer/Viewer'));
 
 const App = () => (
   <BrowserRouter>
@@ -22,6 +23,7 @@ const App = () => (
         <Route path="/explore" exact render={props => <Explore {...props} />} />
         <Route path="/profile" exact render={props => <Profile {...props} />} />
         <Route path="/create" exact render={props => <Create {...props} />} />
+        <Route path="/viewer" exact render={props => <Viewer {...props} />} />
       </Switch>
     </Container>
     </Suspense>
