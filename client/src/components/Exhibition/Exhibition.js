@@ -56,22 +56,6 @@ const Exhibition = () => {
   const transforms = useSelector((state) => state.transforms);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-
-  //   const getdataFromApi = async () => {
-  //     const res = await fetch('http://localhost:5000/pos');
-  //     res.json()
-  //       .then((res) => {
-  //         setTrans(res)
-  //         console.log(res)
-  //       })
-  //       .catch((err) => setError(err))
-  // }
-
-  // getdataFromApi();  
-
-  // }, []);
-
   useEffect(() => {
     dispatch(getTransforms());
   }, [dispatch])
@@ -82,26 +66,16 @@ const Exhibition = () => {
     <Canvas dpr={[1, 2]} onPointerMissed={() => setTarget(null)} camera={{ position: [3, 8, 0] }}>
       <directionalLight position={[10, 10, 5]} intensity={2} />
       <directionalLight position={[-10, -10, -5]} intensity={1} />
-      {/* <Model url="/kajardsarn.glb" scale={0.5} /> */}
+
       {transforms.map((trans) => (
         <Model url="/kajardsarn.glb" sx={trans.ScaleX} sy={trans.ScaleY} sz={trans.ScaleZ}  px={trans.TransX} py={trans.TransY} pz={trans.TransZ} rx={trans.RotateX} ry={trans.RotateY} rz={trans.RotateZ} key={trans._id} />
       ))}
 
-      {/* {trans.map((transi, index) => (
-          <Model url="/chair.glb" sx={transi.ScaleX} sy={transi.ScaleY} sz={transi.ScaleZ}  px={transi.TransX} py={transi.TransY} pz={transi.TransZ} rx={transi.RotateX} ry={transi.RotateY} rz={transi.RotateZ} key={index}/>
-      ))} */}
-
-      {/* <Model url="/morn.glb" sx={1} sy={1} sz={1}  px={0} py={0} pz={0} rx={0} ry={0} rz={0} /> */}
-      
-
-      {/* <Box position={[0, 1, 0]} /> */}
-    
       {target && <TransformControls object={target} mode={mode} />}
       <OrbitControls makeDefault />
       <gridHelper args={[10, 10]} />
       <Stats />
     </Canvas>
-    {/* <tool/> */}
     </Fragment>
   )
 }

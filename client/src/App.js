@@ -9,7 +9,7 @@ const Exhibition = lazy(() => import('./components/Exhibition/Exhibition'));
 const Explore = lazy(() => import('./components/Explore/Explore'));
 const Profile = lazy(() => import('./components/Profile/Profile'));
 const Create = lazy(() => import('./components/Create/Create'));
-const Viewer = lazy(() => import('./components/Viewer/Viewer'));
+const Viewer = lazy(() => import('./components/viewer/Viewer'));
 
 const App = () => (
   <BrowserRouter>
