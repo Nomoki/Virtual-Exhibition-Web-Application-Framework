@@ -19,3 +19,5 @@ export const signIn = (formData) => API.post('/user/signin', formData);
 export const signUp = (formData) => API.post('/user/signup', formData);
 
 export const fetchTransform = () => API.get('/pos');
+export const createTrans = (newPosition) => API.post('/pos', newPosition);
+export const updateTrans = (id, updatedPosition) => API.patch(`/pos/${id}`, updatedPosition);

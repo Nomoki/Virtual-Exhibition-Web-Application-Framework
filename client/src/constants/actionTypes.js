@@ -7,3 +7,5 @@ export const AUTH = 'AUTH';
 export const LOGOUT = 'LOGOUT';
 
 export const TRANS = 'TRANS';
+export const TCREATE = 'TCREATE';
+export const TUPDATE = 'TUPDATE';
